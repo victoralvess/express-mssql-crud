@@ -1,0 +1,14 @@
+{
+  "name": "express-mssql-crud",
+  "version": "0.1.0",
+  "description": "MSSQL CRUD for learning purposes",
+  "main": "index.js",
+  "repository": "https://github.com/victoralvess/express-mssql-crud",
+  "author": "Victor Alves <vsilva.programador@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "knex": "^0.14.6",
+    "mssql": "^4.1.0",
+    "objection": "^1.1.7"
+  }
+}
