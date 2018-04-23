@@ -7,8 +7,12 @@
   "author": "Victor Alves <vsilva.programador@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^5.0.1",
     "knex": "^0.14.6",
     "mssql": "^4.1.0",
     "objection": "^1.1.7"
+  },
+  "devDependencies": {
+    "jest": "^22.4.3"
   }
 }
