@@ -14,11 +14,20 @@ app.get('/contacts', (req, res) => {
     .catch(error => res.status(500).send(error));
 });
 
-/*
- * // TESTING CONNECTION
-  Contact.query().then(contacts => {
-    console.log(contacts);
-  });
-*/
+app.post('/contacts/add', async (req, res) => {
+  const { first_name, last_name, phone } = req.body;
+  
+  try {
+    const contact = await Contact.query()
+                                        .insert({
+                                          first_name,
+                                          last_name,
+                                          phone
+                                        });
+    res.send(contact);
+  } catch (error) {
+    res.status(error.statusCode).send(error);
+  }
+});
 
 app.listen(3000);
