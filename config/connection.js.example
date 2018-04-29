@@ -1,0 +1,20 @@
+module.exports = {
+  development: {
+    client: '',
+    connection: {
+      server: '',
+      user: '',
+      password: '',
+      database: '',
+    },
+  },
+  test: {
+    client: '',
+    connection: {
+      server: '',
+      user: '',
+      password: '',
+      database: '',
+    },
+  },
+};
