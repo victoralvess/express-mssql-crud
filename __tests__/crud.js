@@ -24,6 +24,18 @@ describe('testing GET request at /contacts', () => {
   });
 });
 
+describe('testing GET request at /contacts/{id}', () => {
+  test('return 404 status code if the contact does not exist', (done) => {
+    http.request({
+      ...httpOptions,
+      path: '/contacts/0'
+    }, res => {
+      expect(res.statusCode).toBe(404);
+      done();
+    }).end();
+  })
+});
+
 describe('testing POST request at /contacts/add', () => {
   const options = {
     ...httpOptions,
