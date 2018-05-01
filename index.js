@@ -25,6 +25,7 @@ app.post('/contacts/add', async (req, res) => {
                                           last_name,
                                           phone
                                         });
+    res.location(`/contacts/${contact.id}`);
     res.status(201).send(contact);
   } catch (error) {
     res.status(error.statusCode).send(error);
