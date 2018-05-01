@@ -1,7 +1,5 @@
 const path = require('path');
-console.log(
-  require('dotenv').config({path: path.resolve(__dirname, '.env.test')}),
-);
+require('dotenv').config({path: path.resolve(__dirname, '.env.test')});
 const http = require('http');
 const server = require('../index.js');
 
@@ -27,20 +25,34 @@ describe('testing GET request at /contacts', () => {
 });
 
 describe('testing POST request at /contacts/add', () => {
+  const options = {
+    ...httpOptions,
+    path: '/contacts/add',
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+    },
+  };
+   
   test('returned status code have to be 201 when a contact is added', done => {
     const req = http.request(
-      {
-        ...httpOptions,
-        path: '/contacts/add',
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-      },
+      options,
       res => {
         expect(res.statusCode).toBe(201);
         done();
       },
+    );
+    req.write('{ "first_name": "First Name", "last_name": "Last Name", "phone": "555-555-555" }');
+    req.end();
+  });
+
+  test('verifies if Location header was set after a contact addition', done => {
+    const req = http.request(
+      options,
+      res => {
+        expect(res.headers.location).not.toBeFalsy();
+        done();
+      }
     );
     req.write('{ "first_name": "First Name", "last_name": "Last Name", "phone": "555-555-555" }');
     req.end();
