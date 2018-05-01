@@ -15,16 +15,26 @@ app.get('/contacts', (req, res) => {
     .catch(error => res.status(500).send(error));
 });
 
+app.get('/contacts/:id', (req, res) => {
+  Contact.query()
+    .where('id', req.params.id)
+    .then(contact => {
+      contact.length > 0
+        ? res.send(contact[0])
+        : res.status(404).send({error: 'Contact does not exist.'});
+    })
+    .catch(error => res.status(error.statusCode).send(error));
+});
+
 app.post('/contacts/add', async (req, res) => {
-  const { first_name, last_name, phone } = req.body;
-  
+  const {first_name, last_name, phone} = req.body;
+
   try {
-    const contact = await Contact.query()
-                                        .insert({
-                                          first_name,
-                                          last_name,
-                                          phone
-                                        });
+    const contact = await Contact.query().insert({
+      first_name,
+      last_name,
+      phone,
+    });
     res.location(`/contacts/${contact.id}`);
     res.status(201).send(contact);
   } catch (error) {
