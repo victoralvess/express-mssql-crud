@@ -90,16 +90,22 @@ describe('testing POST request at /contacts/add', () => {
 });
 
 describe('testing PATCH request at /contacts/{id}', () => {
+  let patchOptions;
+
+  beforeAll(() => {
+    patchOptions = {
+      ...httpOptions,
+      path: '/contacts/1',
+      method: 'PATCH',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    }  
+  });
+
   test('tests phone update of a specific contact, verifying the status code that must be 200', done => {
     const req = http.request(
-      {
-        ...httpOptions,
-        path: '/contacts/1',
-        method: 'PATCH',
-        headers: {
-          'Content-type': 'application/json',
-        },
-      },
+      patchOptions,
       res => {
         expect(res.statusCode).toBe(200);
         done();
@@ -107,6 +113,19 @@ describe('testing PATCH request at /contacts/{id}', () => {
     );
 
     req.write('[{ "op": "update", "phone": "123-555-555" }]');
+    req.end();
+  });
+
+  test('tests invalid PATCH body syntax, must return 400', done => {
+    const req = http.request(
+      patchOptions,
+      res => {
+        expect(res.statusCode).toBe(400);
+        done();
+      }
+    );
+
+    req.write = ('{ "phone": "newPhone" }');
     req.end();
   });
 });
