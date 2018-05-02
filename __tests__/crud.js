@@ -88,3 +88,25 @@ describe('testing POST request at /contacts/add', () => {
     req.end();
   });
 });
+
+describe('testing PATCH request at /contacts/{id}', () => {
+  test('tests phone update of a specific contact, verifying the status code that must be 200', done => {
+    const req = http.request(
+      {
+        ...httpOptions,
+        path: '/contacts/1',
+        method: 'PATCH',
+        headers: {
+          'Content-type': 'application/json',
+        },
+      },
+      res => {
+        expect(res.statusCode).toBe(200);
+        done();
+      },
+    );
+
+    req.write('[{ "op": "update", "phone": "123-555-555" }]');
+    req.end();
+  });
+});
