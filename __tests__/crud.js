@@ -112,7 +112,7 @@ describe('testing PATCH request at /contacts/{id}', () => {
       },
     );
 
-    req.write('[{ "op": "update", "phone": "123-555-555" }]');
+    req.write('[{ "op": "update", "field": "phone", "value": "124-555-555" }]');
     req.end();
   });
 
