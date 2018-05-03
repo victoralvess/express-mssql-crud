@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const {validateBody} = require('./utils');
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -24,6 +25,10 @@ app.get('/contacts/:id', (req, res) => {
         : res.status(404).send({error: 'Contact does not exist.'});
     })
     .catch(error => res.status(error.statusCode).send(error));
+});
+
+app.patch('/contacts/:id', validateBody('patch.json'), (req, res) => {
+  res.status(200).end();
 });
 
 app.post('/contacts/add', async (req, res) => {
