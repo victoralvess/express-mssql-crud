@@ -1,0 +1,20 @@
+{
+  "$id": "patch.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "op": {
+        "type": "string",
+        "enum": ["update"]
+      },
+      "field": {
+        "type": "string"
+      },
+      "value": {
+        "type": "string"
+      }
+    },
+    "required": ["op", "field", "value"]
+  }
+}
