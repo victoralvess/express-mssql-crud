@@ -125,7 +125,7 @@ describe('testing PATCH request at /contacts/{id}', () => {
       }
     );
 
-    req.write = ('{ "phone": "newPhone" }');
+    req.write('{ "phone": "newPhone" }');
     req.end();
   });
 });
