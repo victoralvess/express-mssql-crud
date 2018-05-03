@@ -28,7 +28,7 @@ app.get('/contacts/:id', (req, res) => {
 });
 
 app.patch('/contacts/:id', validateBody('patch.json'), (req, res) => {
-  res.status(200).end();
+  req.status(501).end();
 });
 
 app.post('/contacts/add', async (req, res) => {
