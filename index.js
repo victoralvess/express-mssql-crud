@@ -27,8 +27,23 @@ app.get('/contacts/:id', (req, res) => {
     .catch(error => res.status(error.statusCode).send(error));
 });
 
-app.patch('/contacts/:id', validateBody('patch.json'), (req, res) => {
-  req.status(501).end();
+app.patch('/contacts/:id', validateBody('patch.json'), async (req, res) => {
+  const updates = req.body.filter(op => op.op === 'update');
+  
+  for (let i = 0; i < updates.length; i++) {
+    const {field, value} = updates[i];
+    let update = {};
+    update[field] = value;
+
+    try {
+      await Contact.query().where('id', req.params.id).patch(update)      
+    } catch (error) {
+      res.status(400).send(error);
+      break;
+    }
+  }
+  
+  res.status(200).send((await Contact.query().where('id', req.params.id))[0]);
 });
 
 app.post('/contacts/add', async (req, res) => {
