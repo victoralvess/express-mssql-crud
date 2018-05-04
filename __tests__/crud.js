@@ -108,11 +108,12 @@ describe('testing PATCH request at /contacts/{id}', () => {
       patchOptions,
       res => {
         expect(res.statusCode).toBe(200);
+        console.log(res)
         done();
       },
     );
 
-    req.write('[{ "op": "update", "field": "phone", "value": "124-555-555" }]');
+    req.write('[{ "op": "update", "field": "phone", "value": "124-555-555" },{ "op": "update", "field": "phone", "value": "668-555-999" }]');
     req.end();
   });
 
