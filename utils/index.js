@@ -1,3 +1,3 @@
 module.exports = {
-  validateBody: require('./validateBody')
+  validateBody: require('./validateBody'),
 };

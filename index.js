@@ -8,6 +8,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 require('./config/knex');
+const {transaction} = require('objection');
 const Contact = require('./models/contact');
 
 app.get('/contacts', (req, res) => {
@@ -28,21 +29,25 @@ app.get('/contacts/:id', (req, res) => {
 });
 
 app.patch('/contacts/:id', validateBody('patch.json'), async (req, res) => {
-  const updates = req.body.filter(op => op.op === 'update');
-  
-  for (let i = 0; i < updates.length; i++) {
-    const {field, value} = updates[i];
-    let update = {};
-    update[field] = value;
+  try {
+    await transaction(Contact.knex(), async trx => {
+      for (const operation of req.body) {
+        const update = {
+          [operation.field]: operation.value
+        };
 
-    try {
-      await Contact.query().where('id', req.params.id).patch(update)      
-    } catch (error) {
-      res.status(400).send(error);
-      break;
-    }
+        if (operation.op === 'update') {             
+          await Contact
+            .query(trx)
+            .where('id', req.params.id)
+            .patch(update);
+        }
+      }
+    });
+  } catch (e) {
+    return res.status(400).send(e);
   }
-  
+
   res.status(200).send((await Contact.query().where('id', req.params.id))[0]);
 });
 
