@@ -16,7 +16,8 @@ class Contact extends Model {
       properties: {
         id: { type: 'integer' },
         first_name: { type: 'string', minLength: 3, maxLength: 80 },
-        last_name: { type: 'string', minLength: 2, maxLength: 80 }
+        last_name: { type: 'string', minLength: 2, maxLength: 80 },
+        phone: { type: 'string', minLength: 7 }
       }
     };
   }
