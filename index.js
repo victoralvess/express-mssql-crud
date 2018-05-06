@@ -28,6 +28,10 @@ app.get('/contacts/:id', (req, res) => {
     .catch(error => res.status(error.statusCode).send(error));
 });
 
+app.patch('/contacts', (req, res) => {
+  res.status(405).end();
+});
+
 app.patch('/contacts/:id', validateBody('patch.json'), async (req, res) => {
   try {
     await transaction(Contact.knex(), async trx => {
