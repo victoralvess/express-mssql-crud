@@ -129,3 +129,16 @@ describe('testing PATCH request at /contacts/{id}', () => {
     req.end();
   });
 });
+
+describe('testing PATCH request at /contacts', () => {
+  test('response code must be 405', done => {
+    http.request({
+      ...httpOptions,
+      path: '/contacts',
+      method: 'PATCH'
+    }, res => {
+      expect(res.statusCode).toBe(405);
+      done();
+    }).end();
+  });
+});
