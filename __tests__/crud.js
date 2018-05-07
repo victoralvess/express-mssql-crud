@@ -7,8 +7,8 @@ let httpOptions = {
   port: process.env.PORT,
 };
 
-describe('testing GET request at /contacts', () => {
-  test('returned status code have to be 200', done => {
+describe('GET Requests', () => {
+  test('Get all contacts. Response code have to be 200.', done => {
     http
       .request(
         {
@@ -22,10 +22,8 @@ describe('testing GET request at /contacts', () => {
       )
       .end();
   });
-});
 
-describe('testing GET request at /contacts/{id}', () => {
-  test('return 404 status code if the contact does not exist', done => {
+  test('Get a non-existent contact. Response code have to be 404.', done => {
     http
       .request(
         {
@@ -40,7 +38,7 @@ describe('testing GET request at /contacts/{id}', () => {
       .end();
   });
 
-  test('return 200 status code if the contact exists', done => {
+  test('Get a specific contact. Response code have to be 200.', done => {
     http
       .request(
         {
@@ -56,7 +54,7 @@ describe('testing GET request at /contacts/{id}', () => {
   });
 });
 
-describe('testing POST request at /contacts/add', () => {
+describe('POST requests', () => {
   const options = {
     ...httpOptions,
     path: '/contacts/add',
@@ -66,19 +64,9 @@ describe('testing POST request at /contacts/add', () => {
     },
   };
 
-  test('returned status code have to be 201 when a contact is added', done => {
+  test('Add a contact. Response code have to be 201 and "Location" header cannot be falsy.', done => {
     const req = http.request(options, res => {
       expect(res.statusCode).toBe(201);
-      done();
-    });
-    req.write(
-      '{ "first_name": "First Name", "last_name": "Last Name", "phone": "555-555-555" }',
-    );
-    req.end();
-  });
-
-  test('verifies if Location header was set after a contact addition', done => {
-    const req = http.request(options, res => {
       expect(res.headers.location).not.toBeFalsy();
       done();
     });
@@ -89,7 +77,7 @@ describe('testing POST request at /contacts/add', () => {
   });
 });
 
-describe('testing PATCH request at /contacts/{id}', () => {
+describe('PATCH Requests', () => {
   let patchOptions;
 
   beforeAll(() => {
@@ -100,45 +88,44 @@ describe('testing PATCH request at /contacts/{id}', () => {
       headers: {
         'Content-type': 'application/json',
       },
-    }  
+    };
   });
 
-  test('tests phone update of a specific contact, verifying the status code that must be 200', done => {
-    const req = http.request(
-      patchOptions,
-      res => {
-        expect(res.statusCode).toBe(200);
-        done();
-      },
-    );
+  test('Update phone field of a contact. Response code have to be 200.', done => {
+    const req = http.request(patchOptions, res => {
+      expect(res.statusCode).toBe(200);
+      done();
+    });
 
-    req.write('[{ "op": "update", "field": "phone", "value": "124-585-555" },{ "op": "update", "field": "phone", "value": "668-555-899" }]');
+    req.write(
+      '[{ "op": "update", "field": "phone", "value": "124-585-555" },{ "op": "update", "field": "phone", "value": "668-555-899" }]',
+    );
     req.end();
   });
 
-  test('tests invalid PATCH body syntax, must return 400', done => {
-    const req = http.request(
-      patchOptions,
-      res => {
-        expect(res.statusCode).toBe(400);
-        done();
-      }
-    );
+  test('Send a invalid PATCH request body. Response code have to be 400.', done => {
+    const req = http.request(patchOptions, res => {
+      expect(res.statusCode).toBe(400);
+      done();
+    });
 
     req.write('{ "phone": "newPhone" }');
     req.end();
   });
-});
 
-describe('testing PATCH request at /contacts', () => {
-  test('response code must be 405', done => {
-    http.request({
-      ...httpOptions,
-      path: '/contacts',
-      method: 'PATCH'
-    }, res => {
-      expect(res.statusCode).toBe(405);
-      done();
-    }).end();
+  test('Try to patch all contacts. Response code have to be 405.', done => {
+    http
+      .request(
+        {
+          ...httpOptions,
+          path: '/contacts',
+          method: 'PATCH',
+        },
+        res => {
+          expect(res.statusCode).toBe(405);
+          done();
+        },
+      )
+      .end();
   });
 });
