@@ -48,11 +48,12 @@ app.patch('/contacts/:id', validateBody('patch.json'), async (req, res) => {
         }
       }
     });
+    return res.status(200).send((await Contact.query().where('id', req.params.id))[0]);
   } catch (e) {
     return res.status(400).send(e);
   }
 
-  res.status(200).send((await Contact.query().where('id', req.params.id))[0]);
+  res.status(500).end();
 });
 
 app.post('/contacts/add', async (req, res) => {
