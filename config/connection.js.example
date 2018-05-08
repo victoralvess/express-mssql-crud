@@ -1,5 +1,5 @@
 module.exports = {
-  development: {
+  DEVELOPMENT: {
     client: '',
     connection: {
       server: '',
@@ -8,7 +8,7 @@ module.exports = {
       database: '',
     },
   },
-  test: {
+  TEST: {
     client: '',
     connection: {
       server: '',
