@@ -11,50 +11,50 @@ require('./config/knex');
 const {transaction} = require('objection');
 const Contact = require('./models/contact');
 
-app.get('/contacts', (req, res) => {
-  Contact.query()
-    .then(contacts => res.send(contacts))
-    .catch(error => res.status(500).send(error));
-});
+app.route('/contacts')
+  .get((req, res, next) => {
+    Contact.query()
+      .then(contacts => res.send(contacts))
+      .catch(error => res.status(500).send(error));
+  })
+  .patch((req, res, next) => {
+    res.status(405).end();
+  });
 
-app.get('/contacts/:id', (req, res) => {
-  Contact.query()
-    .where('id', req.params.id)
-    .then(contact => {
-      contact.length > 0
-        ? res.send(contact[0])
-        : res.status(404).send({error: 'Contact does not exist.'});
+app.route('/contacts/:id')
+  .get((req, res, next) => {
+    Contact.query()
+      .where('id', req.params.id)
+      .then(contact => {
+        contact.length > 0
+          ? res.send(contact[0])
+          : res.status(404).send({error: 'Contact does not exist.'});
     })
     .catch(error => res.status(error.statusCode).send(error));
-});
+  })
+  .patch(validateBody('patch.json'), async (req, res, next) => {
+    try {
+      await transaction(Contact.knex(), async trx => {
+        for (const operation of req.body) {
+          const update = {
+            [operation.field]: operation.value
+          };
 
-app.patch('/contacts', (req, res) => {
-  res.status(405).end();
-});
-
-app.patch('/contacts/:id', validateBody('patch.json'), async (req, res) => {
-  try {
-    await transaction(Contact.knex(), async trx => {
-      for (const operation of req.body) {
-        const update = {
-          [operation.field]: operation.value
-        };
-
-        if (operation.op === 'update') {             
-          await Contact
-            .query(trx)
-            .where('id', req.params.id)
-            .patch(update);
+          if (operation.op === 'update') {             
+            await Contact
+              .query(trx)
+              .where('id', req.params.id)
+              .patch(update);
+          }
         }
-      }
-    });
-    return res.status(200).send((await Contact.query().where('id', req.params.id))[0]);
-  } catch (e) {
-    return res.status(400).send(e);
-  }
+      });
+      return res.status(200).send((await Contact.query().where('id', req.params.id))[0]);
+    } catch (e) {
+      return res.status(400).send(e);
+    }
 
-  res.status(500).end();
-});
+    res.status(500).end();
+  });
 
 app.post('/contacts/add', async (req, res) => {
   const {first_name, last_name, phone} = req.body;
