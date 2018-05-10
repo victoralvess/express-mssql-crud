@@ -129,3 +129,17 @@ describe('PATCH Requests', () => {
       .end();
   });
 });
+
+describe('PUT Requests', () => {
+  test('Try override the collection. Response code have to be 405.', done => {
+    http
+      .request({
+        ...httpOptions,
+        path: '/contacts',
+        method: 'PUT'
+      }, res => {
+        expect(res.statusCode).toBe(405);
+        done();
+      }).end();
+  });
+});
