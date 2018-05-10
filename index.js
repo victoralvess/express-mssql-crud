@@ -19,6 +19,9 @@ app.route('/contacts')
   })
   .patch((req, res, next) => {
     res.status(405).end();
+  })
+  .put((req, res, next) => {
+    res.status(405).end();
   });
 
 app.route('/contacts/:id')
