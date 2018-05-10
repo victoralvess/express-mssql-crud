@@ -142,4 +142,27 @@ describe('PUT Requests', () => {
         done();
       }).end();
   });
+
+  test('Try override a contact. Response code have to be 200 AND Objects have to match.', done => {
+    let newContact = Object.freeze({ id: 1, first_name: 'Mario', last_name: 'Di Cezare', phone: '123-678-999'});
+    const req = http
+      .request({
+        ...httpOptions,
+        headers: {
+          'Content-type': 'application/json'
+        },
+        path: '/contacts/1',
+        method: 'PUT'
+      }, res => {
+        expect(res.statusCode).toBe(200);
+        res.on('data', chunk => {
+          expect(JSON.parse(chunk.toString())).toEqual(newContact);
+        });
+
+        res.on('end', _ => done());
+      });
+    
+    req.write(JSON.stringify(newContact));
+    req.end();
+  });
 });
