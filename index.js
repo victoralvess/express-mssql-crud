@@ -57,6 +57,17 @@ app.route('/contacts/:id')
     }
 
     res.status(500).end();
+  })
+  .put((req, res, next) => {
+    const id = req.body.id;
+    let update = req.body;
+    delete update.id;
+
+    Contact
+      .query()
+      .updateAndFetchById(id, update)
+      .then(contact => res.status(200).send(contact))
+      .catch(error => res.status(400).send(error));
   });
 
 app.post('/contacts/add', async (req, res) => {
