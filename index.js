@@ -25,15 +25,16 @@ app.route('/contacts')
   });
 
 app.route('/contacts/:id')
-  .get((req, res, next) => {
-    Contact.query()
-      .where('id', req.params.id)
-      .then(contact => {
-        contact.length > 0
-          ? res.send(contact[0])
-          : res.status(404).send({error: 'Contact does not exist.'});
-    })
-    .catch(error => res.status(error.statusCode).send(error));
+  .get(async (req, res, next) => {
+    try {
+      const contacts = (await Contact.query().where('id', req.params.id));
+      if (contacts.length > 0)
+        res.send(contacts[0]);
+      else
+        res.status(404).send({error: 'Contact does not exist.'});
+    } catch (error) {
+      res.status(error.statusCode).send(error);
+    }
   })
   .patch(validateBody('patch.json'), async (req, res, next) => {
     try {
@@ -58,16 +59,17 @@ app.route('/contacts/:id')
 
     res.status(500).end();
   })
-  .put((req, res, next) => {
+  .put(async (req, res, next) => {
     const id = req.body.id;
     let update = req.body;
     delete update.id;
 
-    Contact
-      .query()
-      .updateAndFetchById(id, update)
-      .then(contact => res.status(200).send(contact))
-      .catch(error => res.status(400).send(error));
+    try {
+      const contact = await Contact.query().updateAndFetchById(id, update);
+      res.status(200).send(contact);
+    } catch (error) {
+      res.status(400).send(error);
+    }
   });
 
 app.post('/contacts/add', async (req, res) => {
